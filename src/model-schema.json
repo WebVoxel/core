@@ -1,0 +1,109 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "textures": {
+            "type": "object",
+            "patternProperties": {
+                "(\\w+)": {
+                    "$ref": "#/definitions/texture"
+                }
+            }
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "rotations": {
+                        "type": "object",
+                        "properties": {
+                            "x": { "$ref": "#/definitions/rotation" },
+                            "y": { "$ref": "#/definitions/rotation" },
+                            "z": { "$ref": "#/definitions/rotation" }
+                        }
+                    },
+                    "from": {
+                        "$ref": "#/definitions/array_vector3"
+                    },
+                    "to": {
+                        "$ref": "#/definitions/array_vector3"
+                    },
+                    "faces": {
+                        "type": "object",
+                        "properties": {
+                            "north": {
+                                "$ref": "#/definitions/face"
+                            },
+                            "south": {
+                                "$ref": "#/definitions/face"
+                            },
+                            "east": {
+                                "$ref": "#/definitions/face"
+                            },
+                            "west": {
+                                "$ref": "#/definitions/face"
+                            },
+                            "down": {
+                                "$ref": "#/definitions/face"
+                            },
+                            "up": {
+                                "$ref": "#/definitions/face"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "rotation": {
+            "enum": [-45, -22.5, 0, 22.5, 45]
+        },
+        "uv_rotation": {
+            "enum": [0, 90, 180, 270]
+        },
+        "array_vector3": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3
+        },
+        "array_vector4": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "maxItems": 4,
+            "minItems": 4
+        },
+        "face": {
+            "type": "object",
+            "properties": {
+                "uv": {
+                    "$ref": "#/definitions/array_vector4"
+                },
+                "uv_rotation": {
+                    "$ref": "#/definitions/uv_rotation"
+                },
+                "texture": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/texture"
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "(#\\w+)"
+                        }
+                    ]
+                }
+            }
+        },
+        "texture": {
+            "type": "string",
+            "pattern": "(\\w+\\:)?\\w+\\/\\w+"
+        }
+    }
+}
