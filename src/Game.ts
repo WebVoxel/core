@@ -7,12 +7,13 @@ export class Game {
 	private readonly rootElement: HTMLElement;
 	private plugins: Map<string, Plugin> = new Map<string, Plugin>();
 	private _renderer?: THREE.WebGLRenderer;
-	private camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(45, this.rootElement.clientWidth / this.rootElement.clientHeight, 0.1, 1000);
+	private readonly camera: THREE.PerspectiveCamera;
 	public currentWorld: World;
 
 	constructor(options: IGameOptions) {
 		this.rootElement = options.rootElement || document.body;
 		this.currentWorld = options.initialWorld;
+		this.camera = new THREE.PerspectiveCamera(45, this.rootElement.clientWidth / this.rootElement.clientHeight, 0.1, 1000);
 
 		if (options.plugins)
 			for (const plugin of options.plugins)
@@ -25,11 +26,11 @@ export class Game {
 		});
 	}
 
-	private animate(): void {
+	private animate = (): void => {
 		requestAnimationFrame(this.animate);
 
 		this._renderer!.render(this.currentWorld.scene, this.camera);
-	}
+	};
 
 	public start(): void {
 		this._renderer = new THREE.WebGLRenderer({
