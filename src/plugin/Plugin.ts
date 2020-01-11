@@ -1,8 +1,10 @@
 import { EventHandler } from '../EventHandler';
+import { Game } from '../Game';
 
 export abstract class Plugin {
 	private events: Map<string, EventHandler> = new Map<string, EventHandler>();
 	public readonly name: string;
+	protected game?: Game;
 
 	constructor(name: string) {
 		this.name = name;
@@ -23,4 +25,10 @@ export abstract class Plugin {
 			return;
 		} else handler(data);
 	}
+
+	public setGame(game: Game): void {
+		this.game = game;
+	}
+
+	public abstract init(): void;
 }
