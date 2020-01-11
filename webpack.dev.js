@@ -25,6 +25,11 @@ module.exports = {
         ]
     },
     externals: {
-        three: 'THREE',
+        three: {
+            root: 'THREE',
+            commonjs2: 'three',
+            commonjs: 'three',
+            amd: 'three',
+        },
     },
 };
