@@ -1,23 +1,34 @@
 {
-    "name": "voxelweb",
-    "version": "2.0.0",
-    "description": "",
-    "main": "index.js",
+    "name": "@webvoxel/core",
+    "publishConfig": {
+        "access": "public"
+    },
+    "version": "0.0.1-a5",
+    "description": "Quickly and simply create voxel experiences in your browser!",
+    "main": "dist/webvoxel.min.js",
     "scripts": {
         "dev": "webpack --config webpack.dev.js",
-        "package": "webpack --config webpack.prod.js --mode production"
+        "package": "webpack --config webpack.prod.js --mode production",
+        "prepublishOnly": "yarn package"
     },
     "repository": {
         "type": "git",
-        "url": ""
+        "url": "https://github.com/WebVoxel/core.git"
     },
-    "keywords": [],
+    "keywords": [
+        "voxel",
+        "minecraft",
+        "browser",
+        "3d",
+        "webgl",
+        "three.js"
+    ],
     "author": "Landon Gravat",
     "license": "MIT",
     "bugs": {
-        "url": ""
+        "url": "https://github.com/WebVoxel/core/issues"
     },
-    "homepage": "",
+    "homepage": "https://github.com/WebVoxel/core",
     "dependencies": {
         "three": "^0.112.0"
     },

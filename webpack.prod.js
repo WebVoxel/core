@@ -9,7 +9,8 @@ module.exports = {
         filename: 'webvoxel.min.js',
         path: buildPath,
         library: 'Voxel',
-        libraryTarget: 'var',
+        libraryTarget: 'umd',
+        globalObject: 'this',
     },
     resolve: {
         extensions: [".ts", ".js"]
@@ -24,6 +25,11 @@ module.exports = {
         ],
     },
     externals: {
-        three: 'THREE',
+        three: {
+            root: 'THREE',
+            commonjs2: 'three',
+            commonjs: 'three',
+            amd: 'three',
+        },
     },
 };
