@@ -30,6 +30,7 @@ export class Game {
 		}
 
 		this.animate = this.animate.bind(this);
+		this.onWindowResize = this.onWindowResize.bind(this);
 	}
 
 	private dispatchEventToAllPlugins(eventName: string, data?: any): void {
@@ -52,10 +53,19 @@ export class Game {
 		this.renderer.render(this.currentWorld.scene, this.camera);
 	};
 
+	private onWindowResize(): void {
+		this.camera.aspect = window.innerWidth / window.innerHeight;
+		this.camera.updateProjectionMatrix();
+
+		this.renderer.setSize(window.innerWidth, window.innerHeight);
+	}
+
+
 	public start(): void {
 		this.dispatchEventToAllPlugins('before_load');
 		this._renderer.setPixelRatio(window.devicePixelRatio);
 		this._renderer.setSize(window.innerWidth, window.innerHeight);
+		window.addEventListener('resize', this.onWindowResize, false);
 		document.body.appendChild(this._renderer.domElement);
 
 		this.currentWorld.render();

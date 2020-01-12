@@ -11,6 +11,7 @@ export declare class Game {
     private dispatchEventToAllPlugins;
     getPlugin(name: string): Plugin;
     private animate;
+    private onWindowResize;
     start(): void;
     get renderer(): THREE.WebGLRenderer;
 }
