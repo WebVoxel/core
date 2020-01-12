@@ -3,7 +3,7 @@
     "publishConfig": {
         "access": "public"
     },
-    "version": "0.0.1-b6",
+    "version": "0.0.1-rc1",
     "description": "Quickly and simply create voxel experiences in your browser!",
     "main": "dist/webvoxel.min.js",
     "types": "src/index.d.ts",
