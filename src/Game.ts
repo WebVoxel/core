@@ -5,21 +5,30 @@ import { World } from './world/World';
 
 export class Game {
 	public plugins: Map<string, Plugin> = new Map<string, Plugin>();
-	private _renderer?: THREE.WebGLRenderer;
+	private readonly _renderer?: THREE.WebGLRenderer;
 	public readonly camera: THREE.PerspectiveCamera;
 	public currentWorld: World;
 
 	constructor(options: IGameOptions) {
 		this.currentWorld = options.initialWorld;
 		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-		
-		if (options.plugins)
+
+		const canvas = document.createElement('canvas');
+		const context = <WebGL2RenderingContext>canvas.getContext('webgl2', { antialias: false, xrCompatible: true });
+
+		this._renderer = new THREE.WebGLRenderer({
+			canvas: canvas,
+			context: context
+		});
+
+		if (options.plugins) {
 			for (const plugin of options.plugins) {
 				plugin.setGame(this);
 				plugin.init();
 				this.plugins.set(plugin.name, plugin);
 			}
-		
+		}
+
 		this.animate = this.animate.bind(this);
 	}
 
@@ -34,7 +43,7 @@ export class Game {
 	}
 
 	private animate(): void {
-		requestAnimationFrame(this.animate);
+		this._renderer.setAnimationLoop(this.animate);
 
 		this.currentWorld.animate();
 
@@ -45,15 +54,12 @@ export class Game {
 
 	public start(): void {
 		this.dispatchEventToAllPlugins('before_load');
-		this._renderer = new THREE.WebGLRenderer({
-			antialias: true,
-		});
 		this._renderer.setPixelRatio(window.devicePixelRatio);
 		this._renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this._renderer.domElement);
 
 		this.currentWorld.render();
-		
+
 		this.animate();
 		this.dispatchEventToAllPlugins('load');
 	}

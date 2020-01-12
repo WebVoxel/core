@@ -2,12 +2,13 @@ import { EventHandler } from '../EventHandler';
 import { Game } from '../Game';
 
 export abstract class Plugin {
-	private events: Map<string, EventHandler> = new Map<string, EventHandler>();
+	private events: Map<string, EventHandler>;
 	public readonly name: string;
 	protected game?: Game;
 
 	constructor(name: string) {
 		this.name = name;
+		this.events = new Map<string, EventHandler>();
 	}
 
 	protected on(eventName: string, handler: EventHandler): void {
@@ -15,6 +16,7 @@ export abstract class Plugin {
 	}
 
 	public dispatch(eventName: string, data: any): void {
+		if (!this.events.has(eventName)) return;
 		const handler = this.events.get(eventName);
 
 		if (handler === null || handler === undefined) {
