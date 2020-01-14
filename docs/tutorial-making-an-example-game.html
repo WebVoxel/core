@@ -1,11 +1,9 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     
     <meta charset="utf-8">
-    <title>JSDoc: Game.ts</title>
+    <title>JSDoc: Making an Example Game</title>
 
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -53,135 +51,62 @@
             <div class="column is-9-desktop">
                 <div class="content" id="main-content-wrapper">
                     <header class="page-title">
-                        <p>Source</p>
-                        <h1>Game.ts</h1>
+                        <p>Tutorial</p>
+                        <h1>Making an Example Game</h1>
                     </header>
                     
-                    
+                    <section>
 
-
-
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import { IGameOptions } from './IGameOptions';
-import { Plugin } from './plugin/Plugin';
-import * as THREE from 'three';
-import { World } from './world/World';
+</header>
 
-/**
- * A WebVoxel game
- * @author RailRunner16
- */
-export class Game {
-	public plugins: Map&lt;string, Plugin> = new Map&lt;string, Plugin>();
-	private readonly _renderer: THREE.WebGLRenderer;
-	public readonly camera: THREE.PerspectiveCamera;
-	public currentWorld: World;
+<article>
+    <blockquote>
+<p>If you haven't already, go and read the <a href="/tutorial-getting-started">getting started tutorial</a> before proceeding with this!</p>
+</blockquote>
+<p><strong>NOTE:</strong> I will be using the webpack method of including webvoxel for this tutorial, as I find it much easier. However, if you want to use the <code>&lt;script&gt;</code> tag method, it is about the same, except all your main game code goes in another <code>&lt;script&gt;</code> tag.</p>
+<p>First we will create a new <code>World</code> object to store our world. Then, we will add some blocks with the identifier example:dirt.</p>
+<pre class="prettyprint source lang-js"><code>const dirtId = new Identifier('example', 'dirt');
+const world = new World();
 
-	/**
-	 * Create a new game
-	 * @param {IGameOptions} options The options to instantiate the game with
-	 */
-	constructor(options: IGameOptions) {
-		this.currentWorld = options.initialWorld;
-		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+world.addBlock(new Block({
+    type: dirtId,
+    x: 0, y: 0, z: 0,
+}));
 
-		const canvas = document.createElement('canvas');
-		const context = &lt;WebGL2RenderingContext>canvas.getContext('webgl2', { antialias: false, xrCompatible: true });
+world.addBlock(new Block({
+    type: dirtId,
+    x: 0, y: 0, z: -1,
+}));
 
-		this._renderer = new THREE.WebGLRenderer({
-			canvas: canvas,
-			context: context
-		});
-
-		if (options.plugins) {
-			for (const plugin of options.plugins) {
-				if (plugin.dependencies &amp;&amp; plugin.dependencies.length > 0)
-					for (const dep of plugin.dependencies)
-						if (this.getPlugin(dep) === null) throw new Error(`Missing plugin dependency: ${dep}`);
-				plugin.setGame(this);
-				plugin.init();
-				this.plugins.set(plugin.name, plugin);
-			}
-		}
-
-		this.animate = this.animate.bind(this);
-		this.onWindowResize = this.onWindowResize.bind(this);
-	}
-
-	/**
-	 * Broadcast an event to all the installed plugins.
-	 * @param {string} eventName The name of the event.
-	 * @param {*} data Any data to send with the event
-	 */
-	public dispatchEventToAllPlugins(eventName: string, data?: any): void {
-		this.plugins.forEach((plugin: Plugin, name: string) => {
-			plugin.dispatch(eventName, data);
-		});
-	}
-
-	/**
-	 * Get a plugin's instance
-	 * @param {string} name The name of the plugin
-	 */
-	public getPlugin(name: string): Plugin | null {
-		if (!this.plugins.has(name)) return null;
-		return this.plugins.get(name)!;
-	}
-
-	/**
-	 * The internal animation loop. This method, when called passes itself to the renderer's `setAnimationLoop` function, causing it to loop whenever the page is in focus. For this reason, it is private and should **NOT** be called manually as the game already handles this.
-	 */
-	private animate(): void {
-		this._renderer.setAnimationLoop(this.animate);
-
-		this.currentWorld.animate();
-
-		this.dispatchEventToAllPlugins('animate');
-
-		this._renderer.render(this.currentWorld.scene, this.camera);
-	};
-
-	/**
-	 * An event handler that gets called when the window is resized.
-	 */
-	private onWindowResize(): void {
-		this.camera.aspect = window.innerWidth / window.innerHeight;
-		this.camera.updateProjectionMatrix();
-
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
-	}
-
-	/**
-	 * Start the game.
-	 */
-	public start(): void {
-		this.dispatchEventToAllPlugins('before_load');
-		this._renderer.setPixelRatio(window.devicePixelRatio);
-		this._renderer.setSize(window.innerWidth, window.innerHeight);
-		window.addEventListener('resize', this.onWindowResize, false);
-		document.body.appendChild(this._renderer.domElement);
-
-		this.currentWorld.render();
-
-		this.animate();
-		this.dispatchEventToAllPlugins('load');
-	}
-
-	/**
-	 * The renderer
-	 */
-	get renderer(): THREE.WebGLRenderer {
-		return this._renderer || (null as any as THREE.WebGLRenderer);
-	}
-}
+world.addBlock(new Block({
+    type: dirtId,
+    x: 0, y: 0, z: 1,
+}));
 </code></pre>
-        </article>
-    </section>
+<p>Next we should instantiate the game, and start it.</p>
+<pre class="prettyprint source lang-js"><code>const game = new Game({
+    initialWorld: world,
+});
 
+game.start();
+</code></pre>
+<p>Now when you run the game, you should see a blue screen, but no blocks! lets fix that by adding some controls so you can look around and move. Run <code>yarn add @webvoxel/plugin-wasdcontrols</code> and add this to your code above everything else:</p>
+<pre class="prettyprint source lang-js"><code>const wasd = new WASDControlsPlugin();
+</code></pre>
+<p>Then add it to your game by adding the plugins field to your game options, like so:</p>
+<pre class="prettyprint source lang-js"><code>const game = new Game({
+    // ...
+    plugins: [wasd],
+});
+</code></pre>
+<p>Once you have it added to your game, you can add an event listener to the game's renderer element so that when a player clicks the renderer, it takes control of their pointer. Here is how I do it:</p>
+<pre class="prettyprint source lang-js"><code>game.renderer.domElement.addEventListener('click', () => wasd.controls.lock());
+</code></pre>
+</article>
 
-
+</section>
 
                 </div>
             </div>

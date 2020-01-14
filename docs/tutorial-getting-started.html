@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>JSDoc: getting-started</title>
+    <title>JSDoc: Getting Started with WebVoxel</title>
 
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -44,7 +44,7 @@
             <div class="column is-3" id="sidebarNav">
                 <div class="sidebar">
                     <nav>
-                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-getting-started.html">getting-started</a></li><li><a href="tutorial-making-your-first-game.html">making-your-first-game</a></li></ul><h3>Classes</h3><ul><li><a href="AbstractLoader.html">AbstractLoader</a></li><li><a href="Block.html">Block</a></li><li><a href="Game.html">Game</a></li><li><a href="Identifier.html">Identifier</a></li><li><a href="Plugin.html">Plugin</a></li><li><a href="Point3D.html">Point3D</a></li><li><a href="World.html">World</a></li><li><a href="WorldLoader.html">WorldLoader</a></li></ul><h3>Interfaces</h3><ul><li><a href="IBlockData.html">IBlockData</a></li><li><a href="IGameOptions.html">IGameOptions</a></li><li><a href="IPluginOptions.html">IPluginOptions</a></li><li><a href="IWorldData.html">IWorldData</a></li></ul></div>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-getting-started.html">Getting Started with WebVoxel</a></li><li><a href="tutorial-making-an-example-game.html">Making an Example Game</a></li></ul><h3>Classes</h3><ul><li><a href="AbstractLoader.html">AbstractLoader</a></li><li><a href="Block.html">Block</a></li><li><a href="Game.html">Game</a></li><li><a href="Identifier.html">Identifier</a></li><li><a href="Plugin.html">Plugin</a></li><li><a href="Point3D.html">Point3D</a></li><li><a href="World.html">World</a></li><li><a href="WorldLoader.html">WorldLoader</a></li></ul><h3>Interfaces</h3><ul><li><a href="IBlockData.html">IBlockData</a></li><li><a href="IGameOptions.html">IGameOptions</a></li><li><a href="IPluginOptions.html">IPluginOptions</a></li><li><a href="IWorldData.html">IWorldData</a></li></ul></div>
                     </nav>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                 <div class="content" id="main-content-wrapper">
                     <header class="page-title">
                         <p>Tutorial</p>
-                        <h1>getting-started</h1>
+                        <h1>Getting Started with WebVoxel</h1>
                     </header>
                     
                     <section>
@@ -62,7 +62,7 @@
 </header>
 
 <article>
-    <h1>Getting Started with WebVoxel</h1>
+    <h1>Installing WebVoxel</h1>
 <p>The easiest way to use webvoxel is by including it as a <code>&lt;script&gt;</code> tag in a HTML file, along with its dependency, THREE.js:</p>
 <pre class="prettyprint source lang-html"><code>&lt;script type='text/javascript' src='path/to/three.min.js'>&lt;/script>
 &lt;script type='text/javascript' src='path/to/webvoxel.min.js'>&lt;/script>
@@ -70,8 +70,36 @@
     // Your code here!
 &lt;/script>
 </code></pre>
+<p><strong>Note:</strong> In the browser, all WebVoxel classes are under the <code>Voxel</code> namespace, so instead of doing <code>new Game()</code> you would do <code>new Voxel.Game()</code>. Plugins are also all namespaced this same way, even non-official ones.</p>
 <p>Of course you can import it through node, Webpack or another module bundler, but it must be ran in the browser! An example with webpack below:</p>
 <pre class="prettyprint source lang-js"><code>import { Game, World } from '@webvoxel/core'; // The necessary imports to get a game up and running
+</code></pre>
+<h1>Installing WebVoxel Plugins</h1>
+<h2>Webpack</h2>
+<p>All official WebVoxel plugins are available on NPM. Just do <code>yarn add @webvoxel/plugin-&lt;plugin name&gt;</code>.</p>
+<p>To import and use a plugin:</p>
+<pre class="prettyprint source lang-js"><code>// Make sure to import your things from @webvoxel/core here first!
+import MyPlugin from '@webvoxel/plugin-&lt;plugin name>';
+
+const game = new Game({
+    plugins: [
+        new MyPlugin(),
+    ],
+    // ...
+});
+</code></pre>
+<h2>HTML</h2>
+<p>Since all official plugins are available on NPM, that means they are also all available on <a href="https://unpkg.com">unpkg</a>.</p>
+<p>To include and use a plugin:</p>
+<pre class="prettyprint source lang-html"><code>&lt;!-- Make sure to import THREE.js and WebVoxel core before this! -->
+&lt;script type='text/javascript' src='unpkg.com/@webvoxel/plugin-&lt;plugin name>/dist/webvoxel-plugin-&lt;plugin name>'>&lt;/script>
+&lt;script type='text/javascript'>
+    const game = new Voxel.Game({
+        plugins: [
+            new Voxel.MyPlugin(),
+        ],
+    });
+&lt;/script>
 </code></pre>
 </article>
 
@@ -85,7 +113,7 @@
 
 <footer class="footer">
     <div class="content has-text-centered">
-        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Tue Jan 14 2020 22:17:41 GMT+0000 (Coordinated Universal Time)</p>
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Tue Jan 14 2020 23:26:58 GMT+0000 (Coordinated Universal Time)</p>
         <p class="sidebar-created-by">
             <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
             <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
