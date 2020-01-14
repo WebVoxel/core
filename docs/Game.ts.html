@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>JSDoc: Game.ts</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+</head>
+
+<body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+        <div class="container">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    
+                    
+                        <h1 class="navbar-item">Documentation</h1>
+                    
+                    <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                
+            </nav>
+        </div>
+    </div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-3" id="sidebarNav">
+                <div class="sidebar">
+                    <nav>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-getting-started.html">getting-started</a></li><li><a href="tutorial-making-your-first-game.html">making-your-first-game</a></li></ul><h3>Classes</h3><ul><li><a href="AbstractLoader.html">AbstractLoader</a></li><li><a href="Block.html">Block</a></li><li><a href="Game.html">Game</a></li><li><a href="Identifier.html">Identifier</a></li><li><a href="Plugin.html">Plugin</a></li><li><a href="Point3D.html">Point3D</a></li><li><a href="World.html">World</a></li><li><a href="WorldLoader.html">WorldLoader</a></li></ul><h3>Interfaces</h3><ul><li><a href="IBlockData.html">IBlockData</a></li><li><a href="IGameOptions.html">IGameOptions</a></li><li><a href="IPluginOptions.html">IPluginOptions</a></li><li><a href="IWorldData.html">IWorldData</a></li></ul></div>
+                    </nav>
+                </div>
+            </div>
+            <div class="column is-9-desktop">
+                <div class="content" id="main-content-wrapper">
+                    <header class="page-title">
+                        <p>Source</p>
+                        <h1>Game.ts</h1>
+                    </header>
+                    
+                    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { IGameOptions } from './IGameOptions';
+import { Plugin } from './plugin/Plugin';
+import * as THREE from 'three';
+import { World } from './world/World';
+
+/**
+ * A WebVoxel game
+ * @author RailRunner16
+ */
+export class Game {
+	public plugins: Map&lt;string, Plugin> = new Map&lt;string, Plugin>();
+	private readonly _renderer: THREE.WebGLRenderer;
+	public readonly camera: THREE.PerspectiveCamera;
+	public currentWorld: World;
+
+	/**
+	 * Create a new game
+	 * @param {IGameOptions} options The options to instantiate the game with
+	 */
+	constructor(options: IGameOptions) {
+		this.currentWorld = options.initialWorld;
+		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+		const canvas = document.createElement('canvas');
+		const context = &lt;WebGL2RenderingContext>canvas.getContext('webgl2', { antialias: false, xrCompatible: true });
+
+		this._renderer = new THREE.WebGLRenderer({
+			canvas: canvas,
+			context: context
+		});
+
+		if (options.plugins) {
+			for (const plugin of options.plugins) {
+				if (plugin.dependencies &amp;&amp; plugin.dependencies.length > 0)
+					for (const dep of plugin.dependencies)
+						if (this.getPlugin(dep) === null) throw new Error(`Missing plugin dependency: ${dep}`);
+				plugin.setGame(this);
+				plugin.init();
+				this.plugins.set(plugin.name, plugin);
+			}
+		}
+
+		this.animate = this.animate.bind(this);
+		this.onWindowResize = this.onWindowResize.bind(this);
+	}
+
+	/**
+	 * Broadcast an event to all the installed plugins.
+	 * @param {string} eventName The name of the event.
+	 * @param {*} data Any data to send with the event
+	 */
+	public dispatchEventToAllPlugins(eventName: string, data?: any): void {
+		this.plugins.forEach((plugin: Plugin, name: string) => {
+			plugin.dispatch(eventName, data);
+		});
+	}
+
+	/**
+	 * Get a plugin's instance
+	 * @param {string} name The name of the plugin
+	 */
+	public getPlugin(name: string): Plugin | null {
+		if (!this.plugins.has(name)) return null;
+		return this.plugins.get(name)!;
+	}
+
+	/**
+	 * The internal animation loop. This method, when called passes itself to the renderer's `setAnimationLoop` function, causing it to loop whenever the page is in focus. For this reason, it is private and should **NOT** be called manually as the game already handles this.
+	 */
+	private animate(): void {
+		this._renderer.setAnimationLoop(this.animate);
+
+		this.currentWorld.animate();
+
+		this.dispatchEventToAllPlugins('animate');
+
+		this._renderer.render(this.currentWorld.scene, this.camera);
+	};
+
+	/**
+	 * An event handler that gets called when the window is resized.
+	 */
+	private onWindowResize(): void {
+		this.camera.aspect = window.innerWidth / window.innerHeight;
+		this.camera.updateProjectionMatrix();
+
+		this.renderer.setSize(window.innerWidth, window.innerHeight);
+	}
+
+	/**
+	 * Start the game.
+	 */
+	public start(): void {
+		this.dispatchEventToAllPlugins('before_load');
+		this._renderer.setPixelRatio(window.devicePixelRatio);
+		this._renderer.setSize(window.innerWidth, window.innerHeight);
+		window.addEventListener('resize', this.onWindowResize, false);
+		document.body.appendChild(this._renderer.domElement);
+
+		this.currentWorld.render();
+
+		this.animate();
+		this.dispatchEventToAllPlugins('load');
+	}
+
+	/**
+	 * The renderer
+	 */
+	get renderer(): THREE.WebGLRenderer {
+		return this._renderer || (null as any as THREE.WebGLRenderer);
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Tue Jan 14 2020 22:03:22 GMT+0000 (Coordinated Universal Time)</p>
+        <p class="sidebar-created-by">
+            <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+            <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+        </p>
+    </div>
+</footer>
+
+
+<script src="scripts/app.min.js"></script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

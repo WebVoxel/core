@@ -1,0 +1,159 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>JSDoc: plugin/Plugin.ts</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+</head>
+
+<body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+        <div class="container">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    
+                    
+                        <h1 class="navbar-item">Documentation</h1>
+                    
+                    <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                
+            </nav>
+        </div>
+    </div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-3" id="sidebarNav">
+                <div class="sidebar">
+                    <nav>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-getting-started.html">getting-started</a></li><li><a href="tutorial-making-your-first-game.html">making-your-first-game</a></li></ul><h3>Classes</h3><ul><li><a href="AbstractLoader.html">AbstractLoader</a></li><li><a href="Block.html">Block</a></li><li><a href="Game.html">Game</a></li><li><a href="Identifier.html">Identifier</a></li><li><a href="Plugin.html">Plugin</a></li><li><a href="Point3D.html">Point3D</a></li><li><a href="World.html">World</a></li><li><a href="WorldLoader.html">WorldLoader</a></li></ul><h3>Interfaces</h3><ul><li><a href="IBlockData.html">IBlockData</a></li><li><a href="IGameOptions.html">IGameOptions</a></li><li><a href="IPluginOptions.html">IPluginOptions</a></li><li><a href="IWorldData.html">IWorldData</a></li></ul></div>
+                    </nav>
+                </div>
+            </div>
+            <div class="column is-9-desktop">
+                <div class="content" id="main-content-wrapper">
+                    <header class="page-title">
+                        <p>Source</p>
+                        <h1>plugin/Plugin.ts</h1>
+                    </header>
+                    
+                    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { EventHandler } from '../EventHandler';
+import { Game } from '../Game';
+import { IPluginOptions } from './IPluginOptions';
+
+/**
+ * A base plugin class. Extend this to create your own plugins!
+ * @author RailRunner16
+ */
+export abstract class Plugin {
+	private events: Map&lt;string, EventHandler>;
+	public readonly name: string;
+	public readonly dependencies?: string[] = [];
+	protected game?: Game;
+
+	/**
+	 * Create a new plugin
+	 * @param {string} name The name of the plugin
+	 * @param {IPluginOptions} options Any options for the plugin
+	 */
+	constructor(name: string, options?: IPluginOptions) {
+		this.name = name;
+		this.events = new Map&lt;string, EventHandler>();
+
+		this.dependencies = options &amp;&amp; options.dependencies;
+	}
+
+	/**
+	 * Register an event handler on this plugin
+	 * @param {string} eventName The name of the event to register a handler for
+	 * @param {EventHandler} handler The handler to register
+	 */
+	protected on(eventName: string, handler: EventHandler): void {
+		this.events.set(eventName, handler);
+	}
+
+	/**
+	 * Dispatch an event to this plugin
+	 * @param {string} eventName The name of the event to dispatch
+	 * @param {*} data Any data that should be sent with the event as a payload
+	 */
+	public dispatch(eventName: string, data: any): void {
+		if (!this.events.has(eventName)) return;
+		const handler = this.events.get(eventName);
+
+		if (handler === null || handler === undefined) {
+			console.warn("Event handler was null or undefined. Skipping...");
+			return;
+		} else if (typeof handler !== 'function') {
+			console.warn("Attempted to handle event with non-function event handler.");
+			return;
+		} else handler(data);
+	}
+
+	/**
+	 * Sets the current game inside the plugin. Used internally by the {@link Game} class in order to provide an instance of the game for plugin code to work with. ***NEVER USE THIS MANUALLY!!!***
+	 * @param {Game} game The game that the plugin is installed in
+	 */
+	public setGame(game: Game): void {
+		this.game = game;
+	}
+
+	/**
+	 * Initialize the plugin. A good place to register event handlers.
+	 */
+	public abstract init(): void;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Tue Jan 14 2020 22:03:22 GMT+0000 (Coordinated Universal Time)</p>
+        <p class="sidebar-created-by">
+            <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+            <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+        </p>
+    </div>
+</footer>
+
+
+<script src="scripts/app.min.js"></script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

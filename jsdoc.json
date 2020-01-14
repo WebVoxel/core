@@ -1,0 +1,21 @@
+{
+    "opts": {
+        "recurse": true,
+        "destination": "./docs/",
+        "template": "node_modules/better-docs",
+        "readme": "./README.md",
+        "tutorials": "./tutorials"
+    },
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "plugins": [
+        "node_modules/better-docs/typescript",
+        "plugins/markdown"
+    ],
+    "source": {
+        "includePattern": "\\.ts$",
+        "include": ["./src"],
+        "exclude": ["node_modules"]
+    }
+}
