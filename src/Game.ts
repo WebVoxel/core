@@ -5,7 +5,7 @@ import { World } from './world/World';
 
 export class Game {
 	public plugins: Map<string, Plugin> = new Map<string, Plugin>();
-	private readonly _renderer?: THREE.WebGLRenderer;
+	private readonly _renderer: THREE.WebGLRenderer;
 	public readonly camera: THREE.PerspectiveCamera;
 	public currentWorld: World;
 
@@ -23,6 +23,9 @@ export class Game {
 
 		if (options.plugins) {
 			for (const plugin of options.plugins) {
+				if (plugin.dependencies && plugin.dependencies.length > 0)
+					for (const dep of plugin.dependencies)
+						if (this.getPlugin(dep) === null) throw new Error(`Missing plugin dependency: ${dep}`);
 				plugin.setGame(this);
 				plugin.init();
 				this.plugins.set(plugin.name, plugin);
@@ -39,8 +42,9 @@ export class Game {
 		});
 	}
 
-	public getPlugin(name: string): Plugin {
-		return this.plugins.get(name);
+	public getPlugin(name: string): Plugin | null {
+		if (!this.plugins.has(name)) return null;
+		return this.plugins.get(name)!;
 	}
 
 	private animate(): void {

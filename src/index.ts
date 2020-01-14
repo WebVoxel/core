@@ -7,3 +7,8 @@ export * from './plugin/Plugin';
 export * from './world/World';
 export * from './block/Block';
 export * from './util/Point3D';
+export * from './plugin/IPluginOptions';
+export * from './world/IWorldData';
+export * from './world/WorldLoader';
+export * from './util/AbstractLoader';
+export * from './block/IBlockData';

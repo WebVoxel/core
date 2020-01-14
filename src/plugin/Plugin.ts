@@ -1,14 +1,18 @@
 import { EventHandler } from '../EventHandler';
 import { Game } from '../Game';
+import { IPluginOptions } from './IPluginOptions';
 
 export abstract class Plugin {
 	private events: Map<string, EventHandler>;
 	public readonly name: string;
+	public readonly dependencies?: string[] = [];
 	protected game?: Game;
 
-	constructor(name: string) {
+	constructor(name: string, options?: IPluginOptions) {
 		this.name = name;
 		this.events = new Map<string, EventHandler>();
+
+		this.dependencies = options && options.dependencies;
 	}
 
 	protected on(eventName: string, handler: EventHandler): void {

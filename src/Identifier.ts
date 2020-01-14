@@ -1,4 +1,6 @@
 export class Identifier {
+    public static EMPTY: Identifier = new Identifier('empty');
+    
     public readonly namespace: string;
     public readonly key: string;
 
