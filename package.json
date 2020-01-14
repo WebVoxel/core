@@ -3,14 +3,15 @@
     "publishConfig": {
         "access": "public"
     },
-    "version": "0.0.2-a2",
+    "version": "0.0.2-a3",
     "description": "Quickly and simply create voxel experiences in your browser!",
     "main": "dist/webvoxel.min.js",
     "types": "src/index.d.ts",
     "scripts": {
         "dev": "webpack --config webpack.dev.js",
         "package": "webpack --config webpack.prod.js --mode production",
-        "prepublishOnly": "yarn package"
+        "prepublishOnly": "yarn docs && yarn package",
+        "docs": "jsdoc -c jsdoc.json"
     },
     "repository": {
         "type": "git",
