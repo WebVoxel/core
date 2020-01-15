@@ -1,25 +1,38 @@
-import * as THREE from 'three';
 import { Block } from '../block/Block';
 import { Point3D } from '../util/Point3D';
 import { IWorldData } from './IWorldData';
+import { Mesh, Scene, Color, MeshStandardMaterial, BoxGeometry, HemisphereLight } from 'three';
+import _ from 'lodash'
+
+/**
+ * Remove an item from an array
+ * @param arr The array to remove the item from
+ * @param toRemove The item to remove
+ */
+function removeItemFromArray<T>(arr: T[], toRemove: T): T[] {
+	for(var i = 0; i < arr.length; i++) 
+		if (_.isEqual(arr[i], toRemove))
+			arr.splice(i, 1);
+	return arr;
+}
 
 /**
  * An in game world.
  * @author RailRunner16
  */
 export class World {
-	public scene: THREE.Scene;
+	public scene: Scene;
 	public blocks: Map<string, Block> = new Map<string, Block>();
-	public blockMeshes: Map<string, THREE.Mesh> = new Map();
-	private skyColor: THREE.Color = new THREE.Color(0x87ceeb);
-	private light?: THREE.HemisphereLight;
+	public blockMeshes: Map<string, Mesh> = new Map();
+	private skyColor: Color = new Color(0x87ceeb);
+	private light?: HemisphereLight;
 
 	/**
 	 * Create a new world.
 	 * @param {IWorldData} data The world data to start with. Optional
 	 */
 	constructor(data?: IWorldData) {
-		this.scene = new THREE.Scene();
+		this.scene = new Scene();
 
 		if (data) for (const blockData of data.blocks) {
 			const b = new Block(blockData);
@@ -58,12 +71,12 @@ export class World {
 	 */
 	public render(): void {
 		this.blocks.forEach((b: Block, keyCoords: string) => {
-			const geometry = new THREE.BoxGeometry(1, 1, 1);
-			const material = new THREE.MeshStandardMaterial({
+			const geometry = new BoxGeometry(1, 1, 1);
+			const material = new MeshStandardMaterial({
 				color: 0xff0000,
 			});
 
-			const blockMesh = new THREE.Mesh(geometry, material);
+			const blockMesh = new Mesh(geometry, material);
 			this.scene.add(blockMesh);
 			this.blockMeshes.set(keyCoords, blockMesh)
 
@@ -72,7 +85,7 @@ export class World {
 			blockMesh.position.z = b.coords.z;
 		});
 
-		this.light = new THREE.HemisphereLight(this.skyColor);
+		this.light = new HemisphereLight(this.skyColor);
 		this.scene.add(this.light);
 	}
 
@@ -97,6 +110,13 @@ export class World {
 			blockMesh.position.x = b.coords.x;
 			blockMesh.position.y = b.coords.y;
 			blockMesh.position.z = b.coords.z;
+		});
+
+		this.blockMeshes.forEach((bm: Mesh, listKey: string) => {
+			if (!this.blocks.has(listKey)) {
+				removeItemFromArray(this.scene.children, this.blockMeshes.get(listKey));
+				this.blockMeshes.delete(listKey);
+			}
 		});
 	}
 }

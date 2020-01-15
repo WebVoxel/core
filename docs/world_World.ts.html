@@ -58,7 +58,7 @@
             <div class="column is-3" id="sidebarNav">
                 <div class="sidebar">
                     <nav>
-                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-getting-started.html">Getting Started with WebVoxel</a></li><li><a href="tutorial-making-an-example-game.html">Making an Example Game</a></li></ul><h3>Classes</h3><ul><li><a href="AbstractLoader.html">AbstractLoader</a></li><li><a href="Block.html">Block</a></li><li><a href="Game.html">Game</a></li><li><a href="Identifier.html">Identifier</a></li><li><a href="Plugin.html">Plugin</a></li><li><a href="Point3D.html">Point3D</a></li><li><a href="World.html">World</a></li><li><a href="WorldLoader.html">WorldLoader</a></li></ul><h3>Interfaces</h3><ul><li><a href="IBlockData.html">IBlockData</a></li><li><a href="IGameOptions.html">IGameOptions</a></li><li><a href="IPluginOptions.html">IPluginOptions</a></li><li><a href="IWorldData.html">IWorldData</a></li></ul></div>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Tutorials</h3><ul><li><a href="tutorial-getting-started.html">Getting Started with WebVoxel</a></li><li><a href="tutorial-making-an-example-game.html">Making an Example Game</a></li></ul><h3>Classes</h3><ul><li><a href="AbstractLoader.html">AbstractLoader</a></li><li><a href="Block.html">Block</a></li><li><a href="Game.html">Game</a></li><li><a href="Identifier.html">Identifier</a></li><li><a href="Plugin.html">Plugin</a></li><li><a href="Point3D.html">Point3D</a></li><li><a href="World.html">World</a></li><li><a href="WorldLoader.html">WorldLoader</a></li></ul><h3>Interfaces</h3><ul><li><a href="IBlockData.html">IBlockData</a></li><li><a href="IGameOptions.html">IGameOptions</a></li><li><a href="IPluginOptions.html">IPluginOptions</a></li><li><a href="IWorldData.html">IWorldData</a></li></ul><h3>Global</h3><ul><li><a href="global.html#removeItemFromArray">removeItemFromArray</a></li></ul></div>
                     </nav>
                 </div>
             </div>
@@ -76,28 +76,41 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import * as THREE from 'three';
-import { Block } from '../block/Block';
+            <pre class="prettyprint source linenums"><code>import { Block } from '../block/Block';
 import { Point3D } from '../util/Point3D';
 import { IWorldData } from './IWorldData';
+import { Mesh, Scene, Color, MeshStandardMaterial, BoxGeometry, HemisphereLight } from 'three';
+import _ from 'lodash'
+
+/**
+ * Remove an item from an array
+ * @param arr The array to remove the item from
+ * @param toRemove The item to remove
+ */
+function removeItemFromArray&lt;T>(arr: T[], toRemove: T): T[] {
+	for(var i = 0; i &lt; arr.length; i++) 
+		if (_.isEqual(arr[i], toRemove))
+			arr.splice(i, 1);
+	return arr;
+}
 
 /**
  * An in game world.
  * @author RailRunner16
  */
 export class World {
-	public scene: THREE.Scene;
+	public scene: Scene;
 	public blocks: Map&lt;string, Block> = new Map&lt;string, Block>();
-	public blockMeshes: Map&lt;string, THREE.Mesh> = new Map();
-	private skyColor: THREE.Color = new THREE.Color(0x87ceeb);
-	private light?: THREE.HemisphereLight;
+	public blockMeshes: Map&lt;string, Mesh> = new Map();
+	private skyColor: Color = new Color(0x87ceeb);
+	private light?: HemisphereLight;
 
 	/**
 	 * Create a new world.
 	 * @param {IWorldData} data The world data to start with. Optional
 	 */
 	constructor(data?: IWorldData) {
-		this.scene = new THREE.Scene();
+		this.scene = new Scene();
 
 		if (data) for (const blockData of data.blocks) {
 			const b = new Block(blockData);
@@ -136,12 +149,12 @@ export class World {
 	 */
 	public render(): void {
 		this.blocks.forEach((b: Block, keyCoords: string) => {
-			const geometry = new THREE.BoxGeometry(1, 1, 1);
-			const material = new THREE.MeshStandardMaterial({
+			const geometry = new BoxGeometry(1, 1, 1);
+			const material = new MeshStandardMaterial({
 				color: 0xff0000,
 			});
 
-			const blockMesh = new THREE.Mesh(geometry, material);
+			const blockMesh = new Mesh(geometry, material);
 			this.scene.add(blockMesh);
 			this.blockMeshes.set(keyCoords, blockMesh)
 
@@ -150,7 +163,7 @@ export class World {
 			blockMesh.position.z = b.coords.z;
 		});
 
-		this.light = new THREE.HemisphereLight(this.skyColor);
+		this.light = new HemisphereLight(this.skyColor);
 		this.scene.add(this.light);
 	}
 
@@ -176,6 +189,13 @@ export class World {
 			blockMesh.position.y = b.coords.y;
 			blockMesh.position.z = b.coords.z;
 		});
+
+		this.blockMeshes.forEach((bm: Mesh, listKey: string) => {
+			if (!this.blocks.has(listKey)) {
+				removeItemFromArray(this.scene.children, this.blockMeshes.get(listKey));
+				this.blockMeshes.delete(listKey);
+			}
+		});
 	}
 }</code></pre>
         </article>
@@ -192,7 +212,7 @@ export class World {
 
 <footer class="footer">
     <div class="content has-text-centered">
-        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Wed Jan 15 2020 00:15:00 GMT+0000 (Coordinated Universal Time)</p>
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Wed Jan 15 2020 01:47:17 GMT+0000 (Coordinated Universal Time)</p>
         <p class="sidebar-created-by">
             <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
             <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
