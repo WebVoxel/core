@@ -3,7 +3,7 @@
     "publishConfig": {
         "access": "public"
     },
-    "version": "0.0.2-a5",
+    "version": "0.0.2-a6",
     "description": "Quickly and simply create voxel experiences in your browser!",
     "main": "dist/webvoxel.min.js",
     "types": "src/index.d.ts",
@@ -32,9 +32,11 @@
     },
     "homepage": "https://github.com/WebVoxel/core",
     "dependencies": {
+        "lodash": "^4.17.15",
         "three": "^0.112.0"
     },
     "devDependencies": {
+        "@types/lodash": "^4.14.149",
         "awesome-typescript-loader": "^5.2.1",
         "better-docs": "^1.4.7",
         "jsdoc": "^3.6.3",
