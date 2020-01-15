@@ -110,7 +110,7 @@ export class World {
 
 	/**
 	 * Set the sky color of the worlda
-	 * @param {THREE.Color} skyColor The new sky color
+	 * @param {Color} skyColor The new sky color
 	 */
 	setSkyColor(skyColor: THREE.Color): void {
 		this.skyColor = skyColor;
