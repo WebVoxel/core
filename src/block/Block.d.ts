@@ -1,11 +1,12 @@
 import { Point3D } from '../util/Point3D';
 import { Identifier } from '../Identifier';
 import { IBlockData } from './IBlockData';
+import { IJsonable } from '../util/IJsonable';
 /**
  * A block.
  * @author RailRunner16
  */
-export declare class Block {
+export declare class Block implements IJsonable {
     /**
      * The coordinates of this block.
      */
@@ -19,4 +20,6 @@ export declare class Block {
      * @param {IBlockData} data The block data to initialize the block with. If not passed, defaults will be set.
      */
     constructor(data?: IBlockData);
+    toJson(): IBlockData;
+    toJsonString(): string;
 }
