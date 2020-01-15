@@ -1,7 +1,7 @@
 import { Block } from '../block/Block';
 import { Point3D } from '../util/Point3D';
 import { IWorldData } from './IWorldData';
-import { Mesh, Scene, Color, MeshStandardMaterial, BoxBufferGeometry, TextureLoader, Texture, NearestFilter, DirectionalLight, Light, DoubleSide, MeshLambertMaterial, AmbientLight } from 'three';
+import { Mesh, Scene, Color, MeshStandardMaterial, BoxBufferGeometry, TextureLoader, Texture, NearestFilter, DirectionalLight, Light, DoubleSide, MeshLambertMaterial, AmbientLight, sRGBEncoding } from 'three';
 import _ from 'lodash'
 import { Game } from '../Game';
 import { IJsonable } from '../util/IJsonable';
@@ -94,6 +94,7 @@ export class World implements IJsonable {
 			else texture = textureLoader.load(World.MISSING_TEXTURE);
 
 			texture.magFilter = NearestFilter;
+			texture.encoding = sRGBEncoding;
 
 			const geometry = new BoxBufferGeometry(1, 1, 1);
 			const material = new MeshLambertMaterial({
