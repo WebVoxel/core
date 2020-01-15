@@ -17,5 +17,17 @@
         "includePattern": "\\.ts$",
         "include": ["./src"],
         "exclude": ["node_modules"]
+    },
+    "template": {
+        "better-docs": {
+            "name": "WebVoxel Core",
+	        "hideGenerator": true,
+            "navigation": [
+                {
+                    "label": "Github",
+                    "href": "https://github.com/WebVoxel/core/"
+                }
+            ]
+        }
     }
 }
