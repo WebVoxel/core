@@ -10,12 +10,14 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v1
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
           node-version: '10.x'
-      - name: Checkout Repo
-        uses: actions/checkout@v1
+      - name: Package Dist Files
+        run: yarn package
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.0.0
