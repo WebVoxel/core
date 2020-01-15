@@ -3,11 +3,12 @@ import { Point3D } from '../util/Point3D';
 import { IWorldData } from './IWorldData';
 import { Mesh, Scene } from 'three';
 import { Game } from '../Game';
+import { IJsonable } from '../util/IJsonable';
 /**
  * An in game world.
  * @author RailRunner16
  */
-export declare class World {
+export declare class World implements IJsonable {
     static MISSING_TEXTURE: string;
     scene: Scene;
     blocks: Map<string, Block>;
@@ -46,11 +47,13 @@ export declare class World {
     render(): void;
     /**
      * Set the sky color of the worlda
-     * @param {THREE.Color} skyColor The new sky color
+     * @param {Color} skyColor The new sky color
      */
     setSkyColor(skyColor: THREE.Color): void;
     /**
      * The animation loop of the world. Never call this manually, it is called internally by {@link Game}'s animation loop.
      */
     animate(): void;
+    toJson(): IWorldData;
+    toJsonString(): string;
 }
