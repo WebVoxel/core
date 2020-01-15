@@ -1,7 +1,7 @@
 import { Block } from '../block/Block';
 import { Point3D } from '../util/Point3D';
 import { IWorldData } from './IWorldData';
-import { Mesh, Scene, Color, MeshStandardMaterial, HemisphereLight, BoxBufferGeometry, TextureLoader, Texture, NearestFilter } from 'three';
+import { Mesh, Scene, Color, MeshStandardMaterial, BoxBufferGeometry, TextureLoader, Texture, NearestFilter, DirectionalLight, Light } from 'three';
 import _ from 'lodash'
 import { Game } from '../Game';
 import { IJsonable } from '../util/IJsonable';
@@ -28,7 +28,7 @@ export class World implements IJsonable {
 	public blocks: Map<string, Block> = new Map<string, Block>();
 	public blockMeshes: Map<string, Mesh> = new Map();
 	private skyColor: Color = new Color(0x87ceeb);
-	private light?: HemisphereLight;
+	private light?: Light;
 	private game?: Game;
 
 	/**
@@ -109,7 +109,8 @@ export class World implements IJsonable {
 			blockMesh.position.z = b.coords.z;
 		});
 
-		this.light = new HemisphereLight();
+		this.light = new DirectionalLight(0xffffff, 2);
+		this.light.position.set(1, 1, 0.5).normalize();
 		this.scene.add(this.light);
 	}
 
@@ -154,6 +155,13 @@ export class World implements IJsonable {
 			green: this.skyColor.g,
 			blue: this.skyColor.b,
 		};
+
+		this.blocks.forEach((b: Block, key: string) => {
+			jsonObj.blocks.push({
+				coords: b.coords,
+				type: b.type.toString(),
+			});
+		});
 
 		return jsonObj;
 	}
