@@ -1,12 +1,13 @@
 import { Point3D } from '../util/Point3D';
 import { Identifier } from '../Identifier';
 import { IBlockData } from './IBlockData';
+import { IJsonable } from '../util/IJsonable';
 
 /**
  * A block.
  * @author RailRunner16
  */
-export class Block {
+export class Block implements IJsonable {
 	/**
 	 * The coordinates of this block.
 	 */
@@ -28,5 +29,16 @@ export class Block {
 				? Identifier.fromString(data.type)
 				: data.type
 			: Identifier.EMPTY;
+	}
+
+	public toJson(): IBlockData {
+		return {
+			type: this.type.toString(),
+			coords: this.coords,
+		};
+	}
+
+	public toJsonString(): string {
+		return JSON.stringify(this.toJson());
 	}
 }

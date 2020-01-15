@@ -157,10 +157,7 @@ export class World implements IJsonable {
 		};
 
 		this.blocks.forEach((b: Block, key: string) => {
-			jsonObj.blocks.push({
-				coords: b.coords,
-				type: b.type.toString(),
-			});
+			jsonObj.blocks.push(b.toJson());
 		});
 
 		return jsonObj;
