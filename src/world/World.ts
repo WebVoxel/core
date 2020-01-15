@@ -4,6 +4,7 @@ import { IWorldData } from './IWorldData';
 import { Mesh, Scene, Color, MeshStandardMaterial, HemisphereLight, BoxBufferGeometry, TextureLoader, Texture, NearestFilter } from 'three';
 import _ from 'lodash'
 import { Game } from '../Game';
+import { IJsonable } from '../util/IJsonable';
 
 /**
  * Remove an item from an array
@@ -21,7 +22,7 @@ function removeItemFromArray<T>(arr: T[], toRemove: T): T[] {
  * An in game world.
  * @author RailRunner16
  */
-export class World {
+export class World implements IJsonable {
 	public static MISSING_TEXTURE: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAEklEQVQYGWNgYGD4z/AdjBkYABuSA+36eM/zAAAAAElFTkSuQmCC';
 	public scene: Scene;
 	public blocks: Map<string, Block> = new Map<string, Block>();
@@ -37,9 +38,13 @@ export class World {
 	constructor(data?: IWorldData) {
 		this.scene = new Scene();
 
-		if (data) for (const blockData of data.blocks) {
-			const b = new Block(blockData);
-			this.blocks.set(World.formatListKey(b.coords), b);
+		if (data) {
+			for (const blockData of data.blocks) {
+				const b = new Block(blockData);
+				this.blocks.set(World.formatListKey(b.coords), b);
+			}
+
+			if (data.skyColor) this.skyColor = new Color().setRGB(data.skyColor.red, data.skyColor.green, data.skyColor.blue);
 		}
 	}
 
@@ -104,7 +109,7 @@ export class World {
 			blockMesh.position.z = b.coords.z;
 		});
 
-		this.light = new HemisphereLight(this.skyColor);
+		this.light = new HemisphereLight();
 		this.scene.add(this.light);
 	}
 
@@ -137,5 +142,23 @@ export class World {
 				this.blockMeshes.delete(listKey);
 			}
 		});
+	}
+
+	public toJson(): IWorldData {
+		const jsonObj: IWorldData = {
+			blocks: [],
+		};
+
+		jsonObj.skyColor = {
+			red: this.skyColor.r,
+			green: this.skyColor.g,
+			blue: this.skyColor.b,
+		};
+
+		return jsonObj;
+	}
+
+	public toJsonString(): string {
+		return JSON.stringify(this.toJson());
 	}
 }

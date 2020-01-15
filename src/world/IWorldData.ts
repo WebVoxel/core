@@ -6,4 +6,9 @@ import { IBlockData } from "../block/IBlockData";
  */
 export interface IWorldData {
     blocks: IBlockData[];
+    skyColor?: {
+        red: number;
+        green: number;
+        blue: number;
+    };
 }

@@ -22,7 +22,11 @@ export class Block {
 	 * @param {IBlockData} data The block data to initialize the block with. If not passed, defaults will be set.
 	 */
 	constructor(data?: IBlockData) {
-		this.coords = data ? new Point3D(data.x, data.y, data.z) : Point3D.ORIGIN;
-		this.type = data ? Identifier.fromString(data.type) : Identifier.EMPTY;
+		this.coords = data && data.coords ? new Point3D(data.coords.x, data.coords.y, data.coords.z) : Point3D.ORIGIN;
+		this.type = data 
+			? typeof data.type === 'string' 
+				? Identifier.fromString(data.type)
+				: data.type
+			: Identifier.EMPTY;
 	}
 }
