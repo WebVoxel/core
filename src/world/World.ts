@@ -85,7 +85,7 @@ export class World {
 			const textureLoader = new TextureLoader();
 			let texture: Texture;
 
-			if (this.game!.textureRoot) texture = textureLoader.load(`${this.game!.textureRoot}/${b.type.namespace}/block/${b.type.key}.png`);
+			if (this.game!.textureRoot) texture = textureLoader.load(`${this.game!.textureRoot}/${b.type.namespace}/textures/block/${b.type.key}.png`);
 			else texture = textureLoader.load(World.MISSING_TEXTURE);
 
 			texture.magFilter = NearestFilter;
