@@ -1,0 +1,38 @@
+name: Release Builder
+
+on:
+  push:
+    tags: 
+      - 'v*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - name: Checkout Repo
+        uses: actions/checkout@v1\
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload_release_asset 
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./dist/webvoxel.min.js
+          asset_name: webvoxel.min.js
+          asset_content_type: text/javascript
