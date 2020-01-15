@@ -16,6 +16,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '10.x'
+      - name: Install Dependencies
+        run: yarn
       - name: Package Dist Files
         run: yarn package
       - name: Create Release
