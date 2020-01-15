@@ -110,7 +110,7 @@ export class World implements IJsonable {
 			blockMesh.position.z = b.coords.z;
 		});
 
-		const ambientLight = new AmbientLight(0x808080);
+		const ambientLight = new AmbientLight(0xffffff);
 		this.scene.add(ambientLight);
 
 		this.light = new DirectionalLight(0xffffff, 2);
