@@ -1,7 +1,7 @@
 import { Block } from '../block/Block';
 import { Point3D } from '../util/Point3D';
 import { IWorldData } from './IWorldData';
-import { Mesh, Scene, Color, MeshStandardMaterial, BoxGeometry, HemisphereLight, BoxBufferGeometry, TextureLoader, Texture } from 'three';
+import { Mesh, Scene, Color, MeshStandardMaterial, HemisphereLight, BoxBufferGeometry, TextureLoader, Texture, NearestFilter } from 'three';
 import _ from 'lodash'
 import { Game } from '../Game';
 
@@ -87,6 +87,8 @@ export class World {
 
 			if (this.game!.textureRoot) texture = textureLoader.load(`${this.game!.textureRoot}/${b.type.namespace}/block/${b.type.key}.png`);
 			else texture = textureLoader.load(World.MISSING_TEXTURE);
+
+			texture.magFilter = NearestFilter;
 
 			const geometry = new BoxBufferGeometry(1, 1, 1);
 			const material = new MeshStandardMaterial({
