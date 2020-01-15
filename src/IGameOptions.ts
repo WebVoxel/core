@@ -12,6 +12,11 @@ export interface IGameOptions {
 	plugins?: Plugin[];
 
 	/**
+	 * The root path to the game textures.
+	 */
+	textureRoot?: string;
+
+	/**
 	 * The initial world to load
 	 */
 	initialWorld: World;

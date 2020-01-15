@@ -11,6 +11,7 @@ export declare class Game {
     private readonly _renderer;
     readonly camera: THREE.PerspectiveCamera;
     currentWorld: World;
+    textureRoot?: string;
     /**
      * Create a new game
      * @param {IGameOptions} options The options to instantiate the game with

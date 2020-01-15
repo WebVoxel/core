@@ -2,21 +2,29 @@ import { Block } from '../block/Block';
 import { Point3D } from '../util/Point3D';
 import { IWorldData } from './IWorldData';
 import { Mesh, Scene } from 'three';
+import { Game } from '../Game';
 /**
  * An in game world.
  * @author RailRunner16
  */
 export declare class World {
+    static MISSING_TEXTURE: string;
     scene: Scene;
     blocks: Map<string, Block>;
     blockMeshes: Map<string, Mesh>;
     private skyColor;
     private light?;
+    private game?;
     /**
      * Create a new world.
      * @param {IWorldData} data The world data to start with. Optional
      */
     constructor(data?: IWorldData);
+    /**
+     * Applies a game to the world. For internal use only.
+     * @param game The game to apply
+     */
+    setGame(game: Game): void;
     /**
      * Format a key for the map of blocks.
      * @param {Point3D} position The position of the block in the world.

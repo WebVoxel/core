@@ -12,6 +12,7 @@ export class Game {
 	private readonly _renderer: THREE.WebGLRenderer;
 	public readonly camera: THREE.PerspectiveCamera;
 	public currentWorld: World;
+	public textureRoot?: string;
 
 	/**
 	 * Create a new game
@@ -40,8 +41,12 @@ export class Game {
 			}
 		}
 
+		if (options.textureRoot) this.textureRoot = options.textureRoot;
+
 		this.animate = this.animate.bind(this);
 		this.onWindowResize = this.onWindowResize.bind(this);
+
+		this.currentWorld.setGame(this);
 	}
 
 	/**
@@ -69,11 +74,8 @@ export class Game {
 	 */
 	private animate(): void {
 		this._renderer.setAnimationLoop(this.animate);
-
 		this.currentWorld.animate();
-
 		this.dispatchEventToAllPlugins('animate');
-
 		this._renderer.render(this.currentWorld.scene, this.camera);
 	};
 
@@ -83,7 +85,6 @@ export class Game {
 	private onWindowResize(): void {
 		this.camera.aspect = window.innerWidth / window.innerHeight;
 		this.camera.updateProjectionMatrix();
-
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 	}
 
