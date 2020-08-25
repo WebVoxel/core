@@ -73,7 +73,7 @@ export class Game {
 	 * The internal animation loop. This method, when called passes itself to the renderer's `setAnimationLoop` function, causing it to loop whenever the page is in focus. For this reason, it is private and should **NOT** be called manually as the game already handles this.
 	 */
 	private animate(): void {
-		this._renderer.setAnimationLoop(this.animate);
+		this._renderer.setAnimationLoop(this.animate.bind(this));
 		this.currentWorld.animate();
 		this.dispatchEventToAllPlugins('animate');
 		this._renderer.render(this.currentWorld.scene, this.camera);

@@ -7,19 +7,19 @@ First we will create a new `World` object to store our world. Then, we will add 
 const dirtId = new Identifier('example', 'dirt');
 const world = new World();
 
-world.addBlock(new Block({
+world.setBlock(new Block({
     type: dirtId,
-    x: 0, y: 0, z: 0,
+    x: 0, y: 0, z: 0
 }));
 
-world.addBlock(new Block({
+world.setBlock(new Block({
     type: dirtId,
-    x: 0, y: 0, z: -1,
+    x: 0, y: 0, z: -1
 }));
 
-world.addBlock(new Block({
+world.setBlock(new Block({
     type: dirtId,
-    x: 0, y: 0, z: 1,
+    x: 0, y: 0, z: 1
 }));
 ```
 

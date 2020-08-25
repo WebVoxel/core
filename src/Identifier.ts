@@ -3,7 +3,7 @@
  * @author RailRunner16
  */
 export class Identifier {
-    public static EMPTY: Identifier = new Identifier('empty');
+    public static readonly EMPTY: Identifier = new Identifier('empty');
 
     public readonly namespace: string;
     public readonly key: string;
@@ -15,7 +15,7 @@ export class Identifier {
      */
     public constructor(namespaceOrKey: string, key?: string) {
         if (key === undefined || key === null) {
-            this.namespace = 'unknown';
+            this.namespace = 'webvoxel';
             this.key = namespaceOrKey;
         } else {
             this.namespace = namespaceOrKey;

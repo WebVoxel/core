@@ -36,7 +36,8 @@
         "three": "^0.112.0"
     },
     "devDependencies": {
-        "@types/lodash": "^4.14.149",
+        "@types/lodash": "^4.14.159",
+        "@types/three": "^0.103.2",
         "awesome-typescript-loader": "^5.2.1",
         "better-docs": "^1.4.7",
         "jsdoc": "^3.6.3",
