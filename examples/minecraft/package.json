@@ -25,5 +25,8 @@
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.1",
     "webpack-merge": "^4.2.2"
+  },
+  "resolutions": {
+    "**/minimist": "^1.2.6"
   }
 }
